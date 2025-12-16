@@ -10,7 +10,7 @@ pub fn register_watcher(field_name: &Ident, key: &String, parse_fn: &Expr) -> To
             use ::dyn_cfg::error::WatchInitError;
             use ::dyn_cfg::prelude::faststr::FastStr;
             let key = FastStr::from_static_str(#key);
-            let val_p = ::std::sync::Arc::new(tokio::sync::RwLock::new(
+            let val_p = ::std::sync::Arc::new(::tokio::sync::RwLock::new(
                 match cli.get_raw(key.clone()).await {
                     ConfGetRawResult::Exist(s) => #parse_fn(s.as_str()).map_err(|e| WatchInitError::CannotParse{
                         cli:cli.clone(), key:key.clone(), err_info: FastStr::new(format!("{}", e)),
@@ -46,7 +46,7 @@ pub fn register_watcher_with_default(
             use ::dyn_cfg::error::WatchInitError;
             use ::dyn_cfg::prelude::faststr::FastStr;
             let key = FastStr::from_static_str(#key);
-            let val_p = ::std::sync::Arc::new(tokio::sync::RwLock::new(
+            let val_p = ::std::sync::Arc::new(::tokio::sync::RwLock::new(
                 match cli.get_raw(key.clone()).await {
                     ConfGetRawResult::Exist(s) => #parse_fn(s.as_str()).map_err(|e| WatchInitError::CannotParse{
                         cli:cli.clone(), key:key.clone(), err_info: FastStr::new(format!("{}", e)),
