@@ -64,7 +64,7 @@ pub trait ConfCenter: ConfCenterBasic {
     }
 }
 
-pub trait ConfCenterBasic: Send + Sync + std::fmt::Display {
+pub trait ConfCenterBasic: Send + Sync + std::fmt::Display + std::fmt::Debug {
     fn get_raw(&self, key: FastStr) -> impl std::future::Future<Output = ConfGetRawResult> + Send;
 }
 
