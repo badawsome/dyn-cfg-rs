@@ -6,18 +6,21 @@ use std::collections::HashMap;
 struct Config {
     #[must_init(key = "log.level", parse = (|x: FastStr| x.parse::<u32>()))]
     log_level: u32,
-    #[default(key = "f", default = HashMap::new(), parse = (|x: FastStr| serde_json::from_str(x.as_str())))]
-    f: HashMap<FastStr, FastStr>,
+    #[default(key = "mp", default = HashMap::new(), parse = (|x: FastStr| serde_json::from_str(x.as_str())))]
+    mp: HashMap<FastStr, FastStr>,
 }
 
 #[tokio::main]
 async fn main() {
     let mut watch = JoinSet::new();
     let cli = MockConfCenterBasic::default();
-    cli.insert("log.level", "10".into());
-    match Config::new(&mut watch, cli).await {
+    cli.insert_and_wait("log.level", "10".into()).await;
+    match Config::new(&mut watch, cli.clone()).await {
         Ok(x) => {
             let _ = dbg!(x.log_level().await);
+            let _ = dbg!(x.mp().await);
+            cli.insert_and_wait("mp", r#"{"a": "b"}"#.into()).await;
+            let _ = dbg!(x.mp().await);
         }
         Err(e) => eprintln!("init config fail: {}", e),
     }

@@ -57,12 +57,6 @@ impl MockConfCenterBasic {
         })
     }
 
-    pub fn insert(&self, key: impl Into<FastStr>, value: ConfGetRawResult) {
-        let key = key.into();
-        self.conf.insert(key.clone(), value.clone());
-        self.notify_watchers(key, value);
-    }
-
     fn notify_watchers(&self, key: FastStr, value: ConfGetRawResult) {
         if let Some(sender) = self.watchers.lock().unwrap().get(&key) {
             let _ = sender.send(value.clone());
@@ -74,8 +68,9 @@ impl MockConfCenterBasic {
     /// This method waits for all active watchers to confirm receipt of the update, ensuring
     /// configuration changes are fully propagated. If watchers do not acknowledge within the
     /// timeout period (500ms), a warning is logged but the operation does not fail.
-    pub async fn insert_and_wait(&self, key: FastStr, value: ConfGetRawResult) {
+    pub async fn insert_and_wait(&self, key: impl Into<FastStr>, value: ConfGetRawResult) {
         // Insert the value first
+        let key = key.into();
         self.conf.insert(key.clone(), value.clone());
 
         // Notify watchers
