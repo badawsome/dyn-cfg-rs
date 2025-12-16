@@ -17,6 +17,7 @@ async fn main() {
     cli.insert_and_wait("log.level", "10".into()).await;
     match Config::new(&mut watch, cli.clone()).await {
         Ok(x) => {
+            let _ = dbg!(Config::keys());
             let _ = dbg!(x.log_level().await);
             let _ = dbg!(x.mp().await);
             cli.insert_and_wait("mp", r#"{"a": "b"}"#.into()).await;

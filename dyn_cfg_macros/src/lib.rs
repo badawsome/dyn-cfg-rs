@@ -52,6 +52,13 @@ pub fn dynamic_config(_attr: TokenStream, item: TokenStream) -> TokenStream {
     // Generate field names for constructor
     let field_names = field_configs.iter().map(|config| &config.field_name);
 
+    let keys = field_configs.iter().map(|config| {
+        let name = &config.field_name;
+        quote! {
+            stringify!(#name)
+        }
+    });
+
     // Generate field initialization
     let field_inits = field_configs.iter().map(|config| {
         let field_name = &config.field_name;
@@ -97,6 +104,10 @@ pub fn dynamic_config(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 Ok(Self {
                     #(#field_names: #field_names,)*
                 })
+            }
+
+            pub fn keys() -> &'static [&'static str] {
+                &[#(#keys,)*]
             }
 
             #(#accessor_methods)*
