@@ -9,6 +9,7 @@ edition = "2024"
 publish = ["crates-io"]
 repository = "https://github.com/badawsome/dyn-cfg-rs"
 description = "Dynamic configuration refresh facades and macros"
+license-file = "LICENSE"
 
 [workspace.dependencies]
 dyn_cfg_macros = { path = "./dyn_cfg_macros" }
