@@ -12,7 +12,7 @@ description = "Dynamic configuration refresh facades and macros"
 license-file = "LICENSE"
 
 [workspace.dependencies]
-dyn_cfg_macros = { path = "./dyn_cfg_macros" }
+dyn_cfg_macros = { path = "./dyn_cfg_macros", version = "0.1.0" }
 futures = { version = "0.3.31" }
 faststr = { version = "0.2.31" }
 anyhow = { version = "1" }
