@@ -12,7 +12,7 @@ pub fn register_watcher(field_name: &Ident, key: &String, parse_fn: &Expr) -> To
             let key = FastStr::from_static_str(#key);
             let val_p = ::std::sync::Arc::new(tokio::sync::RwLock::new(
                 match cli.get_raw(key.clone()).await {
-                    ConfGetRawResult::Exist(s) => #parse_fn(s).map_err(|e| WatchInitError::CannotParse{
+                    ConfGetRawResult::Exist(s) => #parse_fn(s.as_str()).map_err(|e| WatchInitError::CannotParse{
                         cli:cli.clone(), key:key.clone(), err_info: FastStr::new(format!("{}", e)),
                     })?,
                     ConfGetRawResult::NotExist { .. } => {
@@ -48,7 +48,7 @@ pub fn register_watcher_with_default(
             let key = FastStr::from_static_str(#key);
             let val_p = ::std::sync::Arc::new(tokio::sync::RwLock::new(
                 match cli.get_raw(key.clone()).await {
-                    ConfGetRawResult::Exist(s) => #parse_fn(s).map_err(|e| WatchInitError::CannotParse{
+                    ConfGetRawResult::Exist(s) => #parse_fn(s.as_str()).map_err(|e| WatchInitError::CannotParse{
                         cli:cli.clone(), key:key.clone(), err_info: FastStr::new(format!("{}", e)),
                     })?,
                     ConfGetRawResult::NotExist { .. } => #default_v,
@@ -75,7 +75,7 @@ pub fn watch_raw(parse_fn: &Expr) -> TokenStream {
             use ::dyn_cfg::prelude::tracing;
             while let Some(i) = x.next().await {
                 match i {
-                    ConfGetRawResult::Exist(s) => match #parse_fn(s.clone()) {
+                    ConfGetRawResult::Exist(s) => match #parse_fn(s.as_str()) {
                         Ok(v) => *val_p_c.write().await = v,
                         Err(e) => {
                             tracing::event!(

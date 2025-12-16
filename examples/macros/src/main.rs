@@ -4,9 +4,9 @@ use std::collections::HashMap;
 
 #[dynamic_config]
 struct Config {
-    #[must_init(key = "log.level", parse = (|x: FastStr| x.parse::<u32>()))]
+    #[must_init(key = "log.level", parse = (|x: &str| x.parse::<u32>()))]
     log_level: u32,
-    #[default(key = "mp", default = HashMap::new(), parse = (|x: FastStr| serde_json::from_str(x.as_str())))]
+    #[default(key = "mp", default = HashMap::new(), parse = serde_json::from_str)]
     mp: HashMap<FastStr, FastStr>,
 }
 
