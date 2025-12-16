@@ -1,12 +1,12 @@
 [workspace]
 resolver = "3"
 members = ["dyn_cfg", "dyn_cfg_macros", "examples/macros"]
-author = ["badcw <badcw123@gmail.com>"]
 
 [workspace.package]
 version = "0.1.1"
 edition = "2024"
 publish = ["crates-io"]
+authors = ["badcw <badcw123@gmail.com>"]
 repository = "https://github.com/badawsome/dyn-cfg-rs"
 description = "Dynamic configuration refresh facades and macros"
 license-file = "LICENSE"

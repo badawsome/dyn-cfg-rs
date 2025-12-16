@@ -6,6 +6,7 @@ publish.workspace = true
 repository.workspace = true
 description.workspace = true
 license-file.workspace = true
+authors.workspace = true
 
 [dependencies]
 dyn_cfg_macros.workspace = true

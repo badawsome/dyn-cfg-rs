@@ -6,6 +6,7 @@ publish.workspace = true
 repository.workspace = true
 description.workspace = true
 license-file.workspace = true
+authors.workspace = true
 
 [lib]
 proc-macro = true
