@@ -3,7 +3,7 @@ resolver = "3"
 members = ["dyn_cfg", "dyn_cfg_macros", "examples/macros"]
 
 [workspace.package]
-version = "0.1.5"
+version = "0.1.6"
 edition = "2024"
 publish = ["crates-io"]
 authors = ["badcw <badcw123@gmail.com>"]
@@ -12,7 +12,7 @@ description = "Dynamic configuration refresh facades and macros"
 license-file = "LICENSE"
 
 [workspace.dependencies]
-dyn_cfg_macros = { path = "./dyn_cfg_macros", version = "0.1.5" }
+dyn_cfg_macros = { path = "./dyn_cfg_macros", version = "0.1.6" }
 futures = { version = "0.3.31" }
 faststr = { version = "0.2.31" }
 anyhow = { version = "1" }
