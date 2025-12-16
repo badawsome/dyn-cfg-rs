@@ -53,9 +53,9 @@ pub fn dynamic_config(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let field_names = field_configs.iter().map(|config| &config.field_name);
 
     let keys = field_configs.iter().map(|config| {
-        let name = &config.field_name;
+        let key = &config.key;
         quote! {
-            stringify!(#name)
+            stringify!(#key)
         }
     });
 
