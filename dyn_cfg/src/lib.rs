@@ -9,6 +9,10 @@ pub mod prelude {
     pub use tracing;
 }
 
+pub mod macros {
+    pub use dyn_cfg_macros::dynamic_config;
+}
+
 pub mod error;
 pub mod facade;
 pub mod mock;
