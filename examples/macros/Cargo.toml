@@ -1,0 +1,12 @@
+[package]
+name = "macros"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+repository.workspace = true
+
+[dependencies]
+dyn_cfg = { path = "../../dyn_cfg" }
+tokio = { workspace = true, features = ["full"] }
+serde_json.workspace = true
+faststr = { workspace = true, features = ["serde"] }

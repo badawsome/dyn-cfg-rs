@@ -8,21 +8,21 @@ pub fn register_watcher(field_name: &Ident, key: &String, parse_fn: &Expr) -> To
         let #field_name = {
             use ::dyn_cfg::models::ConfGetRawResult;
             use ::dyn_cfg::error::WatchInitError;
-            use ::dyn_cfg::prelude::FastStr;
+            use ::dyn_cfg::prelude::faststr::FastStr;
             let key = FastStr::from_static_str(#key);
             let val_p = ::std::sync::Arc::new(tokio::sync::RwLock::new(
                 match cli.get_raw(key.clone()).await {
-                    ConfGetRawResult::Exist(s) => #parse_fn(&s).map_err(|e| WatchInitError::CannotParse{
-                        cli:cli.clone(), key:key.clone(),
+                    ConfGetRawResult::Exist(s) => #parse_fn(s).map_err(|e| WatchInitError::CannotParse{
+                        cli:cli.clone(), key:key.clone(), err_info: FastStr::new(format!("{}", e)),
                     })?,
                     ConfGetRawResult::NotExist { .. } => {
                         return Err(WatchInitError::RequiredKeyNotExist{
                             cli:cli.clone(), key:key.clone(),
                         });
                     },
-                    ConfGetRawResult::GetFail { .. } => {
+                    ConfGetRawResult::GetFail { err_info, .. } => {
                         return Err(WatchInitError::GetFail{
-                            cli:cli.clone(), key:key.clone(),
+                            cli:cli.clone(), key:key.clone(), err_info,
                         });
                     },
                 },
@@ -44,17 +44,17 @@ pub fn register_watcher_with_default(
         let #field_name = {
             use ::dyn_cfg::models::ConfGetRawResult;
             use ::dyn_cfg::error::WatchInitError;
-            use ::dyn_cfg::prelude::FastStr;
+            use ::dyn_cfg::prelude::faststr::FastStr;
             let key = FastStr::from_static_str(#key);
             let val_p = ::std::sync::Arc::new(tokio::sync::RwLock::new(
                 match cli.get_raw(key.clone()).await {
-                    ConfGetRawResult::Exist(s) => #parse_fn(&s).map_err(|e| WatchInitError::CannotParse{
-                        cli:cli.clone(), key:key.clone(),
+                    ConfGetRawResult::Exist(s) => #parse_fn(s).map_err(|e| WatchInitError::CannotParse{
+                        cli:cli.clone(), key:key.clone(), err_info: FastStr::new(format!("{}", e)),
                     })?,
                     ConfGetRawResult::NotExist { .. } => #default_v,
-                    ConfGetRawResult::GetFail { .. } => {
+                    ConfGetRawResult::GetFail { err_info, .. } => {
                         return Err(WatchInitError::GetFail{
-                            cli:cli.clone(), key:key.clone(),
+                            cli:cli.clone(), key:key.clone(), err_info,
                         });
                     },
                 },
@@ -75,7 +75,7 @@ pub fn watch_raw(parse_fn: &Expr) -> TokenStream {
             use ::dyn_cfg::prelude::tracing;
             while let Some(i) = x.next().await {
                 match i {
-                    ConfGetRawResult::Exist(s) => match #parse_fn(&s) {
+                    ConfGetRawResult::Exist(s) => match #parse_fn(s.clone()) {
                         Ok(v) => *val_p_c.write().await = v,
                         Err(e) => {
                             tracing::event!(
@@ -96,11 +96,12 @@ pub fn watch_raw(parse_fn: &Expr) -> TokenStream {
                             "not allow to delete key, will use cache val"
                         );
                     }
-                    ConfGetRawResult::GetFail { .. } => {
+                    ConfGetRawResult::GetFail { err_info, .. } => {
                         tracing::event!(
                             tracing::Level::ERROR,
                             cli = %cli_x,
                             key = %&key,
+                            err_info = %err_info,
                             "refresh value fail, will use cache val"
                         );
                     }

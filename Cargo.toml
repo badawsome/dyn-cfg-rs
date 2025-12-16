@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["dyn_cfg", "dyn_cfg_macros"]
+members = ["dyn_cfg", "dyn_cfg_macros", "examples/macros"]
 author = ["badcw <badcw123@gmail.com>"]
 
 [workspace.package]

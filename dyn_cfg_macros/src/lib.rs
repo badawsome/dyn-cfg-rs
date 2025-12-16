@@ -125,8 +125,7 @@ fn parse_field_config(field: &Field) -> Option<FieldConfig> {
                     key = Some(lit.value());
                 } else if meta.path.is_ident("parse") {
                     let value = meta.value()?;
-                    let lit: syn::LitStr = value.parse()?;
-                    let parse_expr: Expr = lit.parse()?;
+                    let parse_expr: syn::Expr = value.parse()?;
                     parse_fn = Some(parse_expr);
                 }
                 Ok(())

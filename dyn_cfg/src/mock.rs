@@ -57,7 +57,8 @@ impl MockConfCenterBasic {
         })
     }
 
-    pub fn insert(&self, key: FastStr, value: ConfGetRawResult) {
+    pub fn insert(&self, key: impl Into<FastStr>, value: ConfGetRawResult) {
+        let key = key.into();
         self.conf.insert(key.clone(), value.clone());
         self.notify_watchers(key, value);
     }

@@ -15,6 +15,12 @@ pub enum ConfGetRawResult {
     GetFail { key: FastStr, err_info: FastStr },
 }
 
+impl From<&'static str> for ConfGetRawResult {
+    fn from(value: &'static str) -> Self {
+        Self::Exist(FastStr::from_static_str(value))
+    }
+}
+
 #[derive(Debug, thiserror::Error, Clone)]
 pub enum ConfGetStdError {
     #[error("conf key not_exist: {key}")]
