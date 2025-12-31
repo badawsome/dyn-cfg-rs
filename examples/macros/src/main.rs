@@ -8,6 +8,8 @@ struct Config {
     log_level: u32,
     #[default(key = "mp", default = HashMap::new(), parse = serde_json::from_str)]
     mp: HashMap<FastStr, FastStr>,
+    #[default(key = "mapping.with_default", default = MappingConfigWithDefault::default(false), parse = serde_json::from_str)]
+    mapping_with_default: MappingConfigWithDefault<u32, bool>,
 }
 
 #[tokio::main]
@@ -22,6 +24,12 @@ async fn main() {
             let _ = dbg!(x.mp().await);
             cli.insert_and_wait("mp", r#"{"a": "b"}"#.into()).await;
             let _ = dbg!(x.mp().await);
+            cli.insert_and_wait(
+                "mapping.with_default",
+                r#"{"mapping":{"1": true, "2": false}, "default": true}"#.into(),
+            )
+            .await;
+            let _ = dbg!(x.mapping_with_default().await);
         }
         Err(e) => eprintln!("init config fail: {}", e),
     }

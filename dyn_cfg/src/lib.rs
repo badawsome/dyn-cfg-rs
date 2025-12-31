@@ -1,5 +1,5 @@
 pub mod prelude {
-    pub use crate::{error::*, facade::*, mock::*, models::*, parser::*};
+    pub use crate::{config_models::*, error::*, facade::*, mock::*, models::*, parser::*};
     pub use anyhow;
     pub use dyn_cfg_macros::dynamic_config;
     pub use faststr;
@@ -12,6 +12,8 @@ pub mod parser {
     pub use serde_json;
     pub use std::str::FromStr;
 }
+
+pub mod config_models;
 
 pub mod macros {
     pub use dyn_cfg_macros::dynamic_config;
