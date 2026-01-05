@@ -30,7 +30,11 @@ where
         }
     }
 
-    pub fn get(&self, k: &K) -> &T {
+    pub fn get<Q: ?Sized>(&self, k: &Q) -> &T
+    where
+        K: std::borrow::Borrow<Q>,
+        Q: std::hash::Hash + Eq,
+    {
         self.mapping.get(k).unwrap_or(&self.default_value)
     }
 }
