@@ -114,7 +114,7 @@ dependencies = [
 
 [[package]]
 name = "dyn_cfg"
-version = "0.1.8"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "dyn_cfg_macros",
@@ -131,7 +131,7 @@ dependencies = [
 
 [[package]]
 name = "dyn_cfg_macros"
-version = "0.1.8"
+version = "0.2.0"
 dependencies = [
  "dyn_cfg",
  "faststr",
@@ -366,7 +366,7 @@ dependencies = [
 
 [[package]]
 name = "macros"
-version = "0.1.8"
+version = "0.2.0"
 dependencies = [
  "dyn_cfg",
  "faststr",

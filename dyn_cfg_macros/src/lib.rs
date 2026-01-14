@@ -10,6 +10,7 @@ struct FieldConfig {
     parse_fn: syn::Expr,
     default_value: Option<syn::Expr>,
     is_required: bool,
+    needs_cli: bool,
 }
 
 #[proc_macro_attribute]
@@ -62,12 +63,19 @@ pub fn dynamic_config(_attr: TokenStream, item: TokenStream) -> TokenStream {
         let field_name = &config.field_name;
         let key = &config.key;
         let parse_fn = &config.parse_fn;
+        let needs_cli = config.needs_cli;
 
         if config.is_required {
-            watcher::register_watcher(field_name, key, parse_fn)
+            watcher::register_watcher(field_name, key, parse_fn, needs_cli)
         } else {
             let default_value = config.default_value.as_ref().unwrap();
-            watcher::register_watcher_with_default(field_name, key, parse_fn, default_value)
+            watcher::register_watcher_with_default(
+                field_name,
+                key,
+                parse_fn,
+                default_value,
+                needs_cli,
+            )
         }
     });
 
@@ -123,6 +131,7 @@ fn parse_field_config(field: &Field) -> Option<FieldConfig> {
     let mut parse_fn = None;
     let mut default_value = None;
     let mut is_required = false;
+    let mut needs_cli = false;
 
     for attr in &field.attrs {
         if attr.path().is_ident("must_init") {
@@ -136,6 +145,12 @@ fn parse_field_config(field: &Field) -> Option<FieldConfig> {
                     let value = meta.value()?;
                     let parse_expr: syn::Expr = value.parse()?;
                     parse_fn = Some(parse_expr);
+                    needs_cli = false;
+                } else if meta.path.is_ident("parse_with_cli") {
+                    let value = meta.value()?;
+                    let parse_expr: syn::Expr = value.parse()?;
+                    parse_fn = Some(parse_expr);
+                    needs_cli = true;
                 }
                 Ok(())
             })
@@ -151,6 +166,12 @@ fn parse_field_config(field: &Field) -> Option<FieldConfig> {
                     let value = meta.value()?;
                     let parse_expr: syn::Expr = value.parse()?;
                     parse_fn = Some(parse_expr);
+                    needs_cli = false;
+                } else if meta.path.is_ident("parse_with_cli") {
+                    let value = meta.value()?;
+                    let parse_expr: syn::Expr = value.parse()?;
+                    parse_fn = Some(parse_expr);
+                    needs_cli = true;
                 } else if meta.path.is_ident("default") {
                     let value = meta.value()?;
                     let default_expr: Expr = value.parse()?;
@@ -186,5 +207,6 @@ fn parse_field_config(field: &Field) -> Option<FieldConfig> {
         parse_fn: parse_fn.unwrap(),
         default_value,
         is_required,
+        needs_cli,
     })
 }
